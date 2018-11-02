@@ -151,14 +151,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppLayer\EmployeeApp.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Context\TempusDatabaseContext.cs" />
+    <Compile Include="Controllers\AssignmentsController.cs" />
     <Compile Include="Controllers\EmployeesController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QualificationsController.cs" />
     <Compile Include="Controllers\TaskItemsController.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
@@ -177,9 +176,6 @@
     <Compile Include="Services\Contracts\IAssignmentService.cs" />
     <Compile Include="Services\Contracts\IEmployeeService.cs" />
     <Compile Include="Services\Contracts\ITaskService.cs" />
-    <Compile Include="Services\Dummy\DummyAssignmentService.cs" />
-    <Compile Include="Services\Dummy\DummyEmployeeService.cs" />
-    <Compile Include="Services\Dummy\DummyTaskService.cs" />
     <Compile Include="Services\Sql\SqlAssignmentService.cs" />
     <Compile Include="Services\Sql\SqlEmployeeService.cs" />
     <Compile Include="Services\Sql\SqlTaskService.cs" />

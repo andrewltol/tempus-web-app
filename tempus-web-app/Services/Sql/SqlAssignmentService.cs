@@ -17,7 +17,7 @@ namespace TempusWebApp.Services
     public IList<Assignment> GetForEmployee(int employeeId)
     {
       var assignments = SC.DB.Assignments.Join(SC.DB.Employees, 
-        a => a.EmployeeId, e => e.Id, (a, e) => a).ToList();
+        a => a.Employee.Id, e => e.Id, (a, e) => a).ToList();
       return assignments;
     }
 
@@ -30,7 +30,7 @@ namespace TempusWebApp.Services
 
     public IList<Assignment> GetForTask(int taskId)
     {
-      var assignments = SC.DB.Assignments.Where(a => a.TaskId == taskId).ToList();
+      var assignments = SC.DB.Assignments.Where(a => a.TaskItem.Id == taskId).ToList();
       return assignments;
     }
   }

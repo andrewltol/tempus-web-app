@@ -9,11 +9,11 @@ namespace TempusWebApp.Models
     [Key, Required]   
     public int Id { get; set; }
 
-    [ForeignKey("Task"), Required]
-    public int TaskId { get; set; }
+    [Required]
+    public virtual TaskItem TaskItem { get; set; }
 
-    [ForeignKey("Employee"), Required]
-    public int EmployeeId { get; set; }
+    [Required]
+    public virtual Employee Employee { get; set; }
 
     [Required]
     public DateTime StartTime { get; set; }

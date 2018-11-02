@@ -24,5 +24,7 @@ namespace TempusWebApp.Models
     public System.Data.Entity.DbSet<TempusWebApp.Models.TaskItem> TaskItems { get; set; }
 
     public System.Data.Entity.DbSet<TempusWebApp.Models.Qualification> Qualifications { get; set; }
+
+    public System.Data.Entity.DbSet<TempusWebApp.Models.Assignment> Assignments { get; set; }
   }
 }

@@ -16,7 +16,7 @@ namespace TempusWebApp.Models
     [Required]
     public DateTime StartDate { get; set; }
 
-    public DateTime EndDate { get; set; }
+    public DateTime TerminationDate { get; set; }
 
     [Column(TypeName = "NVARCHAR(MAX)")]
     public string Notes { get; set; }
