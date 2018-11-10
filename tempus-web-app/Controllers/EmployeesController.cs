@@ -9,10 +9,12 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using TempusWebApp.Attributes;
 using TempusWebApp.Models;
 
 namespace TempusWebApp.Controllers
 {
+  [CrossDomainBypass, RoutePrefix("api/employees")]
   public class EmployeesController : ApiController
   {
     private TempusWebAppContext db = new TempusWebAppContext();
@@ -72,16 +74,22 @@ namespace TempusWebApp.Controllers
     }
 
     // POST: api/Employees
-    [ResponseType(typeof(Employee))]
-    public async Task<IHttpActionResult> PostEmployee(Employee employee)
+    [HttpPost, ResponseType(typeof(Employee))]
+    public async Task<IHttpActionResult> PostEmployee([FromBody] Employee employee)
     {
       if (!ModelState.IsValid)
       {
         return BadRequest(ModelState);
       }
-
-      db.Employees.Add(employee);
-      await db.SaveChangesAsync();
+      try
+      {
+        db.Employees.Add(employee);
+        await db.SaveChangesAsync();
+      }
+      catch (Exception e)
+      {
+        return InternalServerError(e);
+      }
 
       return CreatedAtRoute("DefaultApi", new { id = employee.Id }, employee);
     }
@@ -100,6 +108,13 @@ namespace TempusWebApp.Controllers
       await db.SaveChangesAsync();
 
       return Ok(employee);
+    }
+
+    // Cross domain for DEBUG only
+    [HttpOptions]
+    public IHttpActionResult OptionsEndpoint()
+    {
+      return Ok();
     }
 
     protected override void Dispose(bool disposing)
