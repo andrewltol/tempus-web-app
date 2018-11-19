@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using TempusWebApp.Attributes;
 using TempusWebApp.Models;
 
 namespace TempusWebApp.Controllers
 {
+  [CrossDomainBypass]
   public class TaskItemsController : ApiController
   {
     private TempusWebAppContext db = new TempusWebAppContext();
@@ -80,8 +79,15 @@ namespace TempusWebApp.Controllers
         return BadRequest(ModelState);
       }
 
-      db.TaskItems.Add(taskItem);
-      await db.SaveChangesAsync();
+      try
+      {
+        db.TaskItems.Add(taskItem);
+        await db.SaveChangesAsync();
+      }
+      catch (Exception e)
+      {
+        InternalServerError(e);
+      }
 
       return CreatedAtRoute("DefaultApi", new { id = taskItem.Id }, taskItem);
     }
@@ -100,6 +106,13 @@ namespace TempusWebApp.Controllers
       await db.SaveChangesAsync();
 
       return Ok(taskItem);
+    }
+
+    // Cross domain for DEBUG only
+    [HttpOptions]
+    public IHttpActionResult OptionsEndpoint()
+    {
+      return Ok();
     }
 
     protected override void Dispose(bool disposing)

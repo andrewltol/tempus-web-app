@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Data.Entity;
 
 namespace TempusWebApp.Models
 {
@@ -19,12 +15,16 @@ namespace TempusWebApp.Models
         {
         }
 
-    public System.Data.Entity.DbSet<TempusWebApp.Models.Employee> Employees { get; set; }
+    public DbSet<Employee> Employees { get; set; }
 
-    public System.Data.Entity.DbSet<TempusWebApp.Models.TaskItem> TaskItems { get; set; }
+    public DbSet<TaskItem> TaskItems { get; set; }
 
-    public System.Data.Entity.DbSet<TempusWebApp.Models.Qualification> Qualifications { get; set; }
+    public DbSet<Qualification> Qualifications { get; set; }
 
-    public System.Data.Entity.DbSet<TempusWebApp.Models.Assignment> Assignments { get; set; }
+    public DbSet<Assignment> Assignments { get; set; }
+
+    public DbSet<EmployeeQualification> EmployeeQualifications { get; set; }
+
+    public DbSet<TaskQualification> TaskQualifications { get; set; }
   }
 }

@@ -6,7 +6,7 @@ namespace TempusWebApp.Models
 {
   public class Assignment
   {
-    [Key, Required]   
+    [Key]   
     public int Id { get; set; }
 
     [Required]

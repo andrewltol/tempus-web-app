@@ -6,7 +6,7 @@ namespace TempusWebApp.Models
   [Table("Qualification")]
   public class Qualification
   {
-    [Key, Required]
+    [Key]
     public int Id { get; set; }
 
     [Required, MaxLength(50)]

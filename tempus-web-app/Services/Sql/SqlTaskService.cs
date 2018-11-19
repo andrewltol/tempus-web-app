@@ -17,7 +17,7 @@ namespace TempusWebApp.Services.Sql
     public IList<TaskItem> GetForPeriod(DateTime startDate, DateTime endDate)
     {
       var tasks = SC.DB.Tasks
-        .Where(t => startDate.IsBetween(t.StartDate, t.TerminationDate) || endDate.IsBetween(t.StartDate, t.TerminationDate))
+        .Where(t => startDate.IsBetween(t.StartDate, t.TerminationDate.GetValueOrDefault()) || endDate.IsBetween(t.StartDate, t.TerminationDate.GetValueOrDefault()))
         .ToList();
       return tasks;
     }

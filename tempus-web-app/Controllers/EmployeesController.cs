@@ -1,35 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using TempusWebApp.Attributes;
 using TempusWebApp.Models;
+using TempusWebApp.Services;
 
 namespace TempusWebApp.Controllers
 {
-  [CrossDomainBypass, RoutePrefix("api/employees")]
+  [CrossDomainBypass]
   public class EmployeesController : ApiController
   {
+    private readonly IEmployeeService _employeeService;
+
     private TempusWebAppContext db = new TempusWebAppContext();
 
-    // GET: api/Employees
-    public IQueryable<Employee> GetEmployees()
+    public EmployeesController(IEmployeeService employeeService)
     {
-      return db.Employees;
+      _employeeService = employeeService;
+    }
+    
+    // GET: api/Employees
+    public IList<Employee> GetEmployees()
+    {
+      return _employeeService.GetAll();
     }
 
     // GET: api/Employees/5
     [ResponseType(typeof(Employee))]
     public async Task<IHttpActionResult> GetEmployee(int id)
     {
-      Employee employee = await db.Employees.FindAsync(id);
+      Employee employee = await _employeeService.Get(id);
       if (employee == null)
       {
         return NotFound();
@@ -52,11 +57,9 @@ namespace TempusWebApp.Controllers
         return BadRequest();
       }
 
-      db.Entry(employee).State = EntityState.Modified;
-
       try
       {
-        await db.SaveChangesAsync();
+        await _employeeService.Update(employee);
       }
       catch (DbUpdateConcurrencyException)
       {
@@ -83,8 +86,7 @@ namespace TempusWebApp.Controllers
       }
       try
       {
-        db.Employees.Add(employee);
-        await db.SaveChangesAsync();
+        await _employeeService.Add(employee);
       }
       catch (Exception e)
       {
@@ -98,14 +100,13 @@ namespace TempusWebApp.Controllers
     [ResponseType(typeof(Employee))]
     public async Task<IHttpActionResult> DeleteEmployee(int id)
     {
-      Employee employee = await db.Employees.FindAsync(id);
+      Employee employee = await _employeeService.Get(id);
       if (employee == null)
       {
         return NotFound();
       }
 
-      db.Employees.Remove(employee);
-      await db.SaveChangesAsync();
+      await _employeeService.Delete(employee);
 
       return Ok(employee);
     }

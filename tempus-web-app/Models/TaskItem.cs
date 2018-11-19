@@ -7,7 +7,7 @@ namespace TempusWebApp.Models
   [Table("Task")]
   public class TaskItem
   {
-    [Key, Required]
+    [Key]
     public int Id { get; set; }
 
     [Required, MaxLength(100)]
@@ -16,7 +16,7 @@ namespace TempusWebApp.Models
     [Required]
     public DateTime StartDate { get; set; }
 
-    public DateTime TerminationDate { get; set; }
+    public DateTime? TerminationDate { get; set; }
 
     [Column(TypeName = "NVARCHAR(MAX)")]
     public string Notes { get; set; }

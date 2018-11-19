@@ -10,6 +10,8 @@ namespace TempusWebApp
   {
     public static void Register(HttpConfiguration config)
     {
+      IocConfig.SetupSimpleInjector();
+
       // Web API configuration and services
       var json = GlobalConfiguration.Configuration.Formatters.JsonFormatter;
       json.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
