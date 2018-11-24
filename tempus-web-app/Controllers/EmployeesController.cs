@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Entity.Infrastructure;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -17,17 +16,15 @@ namespace TempusWebApp.Controllers
   {
     private readonly IEmployeeService _employeeService;
 
-    private TempusWebAppContext db = new TempusWebAppContext();
-
     public EmployeesController(IEmployeeService employeeService)
     {
       _employeeService = employeeService;
     }
     
     // GET: api/Employees
-    public IList<Employee> GetEmployees()
+    public async Task<IList<Employee>> GetEmployees()
     {
-      return _employeeService.GetAll();
+      return await _employeeService.GetAll();
     }
 
     // GET: api/Employees/5
@@ -57,20 +54,22 @@ namespace TempusWebApp.Controllers
         return BadRequest();
       }
 
+      if (!await _employeeService.Exists(id))
+      {
+        return NotFound();
+      }
+
       try
       {
         await _employeeService.Update(employee);
       }
-      catch (DbUpdateConcurrencyException)
+      catch (DbUpdateConcurrencyException dce)
       {
-        if (!EmployeeExists(id))
-        {
-          return NotFound();
-        }
-        else
-        {
-          throw;
-        }
+        return InternalServerError(dce);
+      }
+      catch (Exception e)
+      {
+        return InternalServerError(e);
       }
 
       return StatusCode(HttpStatusCode.NoContent);
@@ -122,14 +121,9 @@ namespace TempusWebApp.Controllers
     {
       if (disposing)
       {
-        db.Dispose();
+        _employeeService.Dispose();
       }
       base.Dispose(disposing);
-    }
-
-    private bool EmployeeExists(int id)
-    {
-      return db.Employees.Count(e => e.Id == id) > 0;
     }
   }
 }

@@ -8,30 +8,30 @@ namespace TempusWebApp.Services
 {
   public class SqlAssignmentService : IAssignmentService
   {
-    public Assignment Get(int id)
-    {
-      var assignment = SC.DB.Assignments.Single(a => a.Id == id);
-      return assignment;
-    }
+    //public Assignment Get(int id)
+    //{
+    //  var assignment = SC.DB.Assignments.Single(a => a.Id == id);
+    //  return assignment;
+    //}
 
-    public IList<Assignment> GetForEmployee(int employeeId)
-    {
-      var assignments = SC.DB.Assignments.Join(SC.DB.Employees, 
-        a => a.Employee.Id, e => e.Id, (a, e) => a).ToList();
-      return assignments;
-    }
+    //public IList<Assignment> GetForEmployee(int employeeId)
+    //{
+    //  var assignments = SC.DB.Assignments.Join(SC.DB.Employees, 
+    //    a => a.Employee.Id, e => e.Id, (a, e) => a).ToList();
+    //  return assignments;
+    //}
 
-    public IList<Assignment> GetForPeriod(DateTime startTime, DateTime endTime)
-    {
-      var assignments = SC.DB.Assignments
-        .Where(a => startTime.IsBetween(a.StartTime, a.EndTime) || endTime.IsBetween(a.StartTime, a.EndTime)).ToList();
-      return assignments;
-    }
+    //public IList<Assignment> GetForPeriod(DateTime startTime, DateTime endTime)
+    //{
+    //  var assignments = SC.DB.Assignments
+    //    .Where(a => startTime.IsBetween(a.StartTime, a.EndTime) || endTime.IsBetween(a.StartTime, a.EndTime)).ToList();
+    //  return assignments;
+    //}
 
-    public IList<Assignment> GetForTask(int taskId)
-    {
-      var assignments = SC.DB.Assignments.Where(a => a.TaskItem.Id == taskId).ToList();
-      return assignments;
-    }
+    //public IList<Assignment> GetForTask(int taskId)
+    //{
+    //  var assignments = SC.DB.Assignments.Where(a => a.TaskItem.Id == taskId).ToList();
+    //  return assignments;
+    //}
   }
 }

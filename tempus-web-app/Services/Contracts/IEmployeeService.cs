@@ -21,6 +21,18 @@ namespace TempusWebApp.Services
     Task Delete(Employee employee);
 
     /// <summary>
+    /// Dispose of this service.
+    /// </summary>
+    void Dispose();
+
+    /// <summary>
+    /// Determines if an employee exists.
+    /// </summary>
+    /// <param name="id">Id of employee to check for.</param>
+    /// <returns>True if object is found with that id.</returns>
+    Task<bool> Exists(int id);
+
+    /// <summary>
     /// Gets an employee.
     /// </summary>
     /// <param name="id">Id of employee to get.</param>
@@ -31,21 +43,21 @@ namespace TempusWebApp.Services
     /// Gets all employees.
     /// </summary>
     /// <returns>List of employees.</returns>
-    IList<Employee> GetAll();
+    Task<List<Employee>> GetAll();
 
     /// <summary>
     /// Gets all employees that are in the provided roles.
     /// </summary>
     /// <param name="roleIds">List of roles that the employees must contain.</param>
     /// <returns>Employee that contain any of the provides role ids.</returns>
-    IList<Employee> GetForRoles(IList<int> roleIds);
+    Task<List<Employee>> GetForRoles(IList<int> roleIds);
 
     /// <summary>
     /// Get employees that can be assigned to a task.
     /// </summary>
     /// <param name="taskId">Id of task to get employees for.</param>
     /// <returns>List of employees that can be assigned to task.</returns>
-    IList<Employee> GetForTask(int taskId);
+    Task<List<Employee>> GetForTask(int taskId);
 
     /// <summary>
     /// Updates the data for an employee.

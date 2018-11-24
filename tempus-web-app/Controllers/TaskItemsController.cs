@@ -1,32 +1,37 @@
 ﻿using System;
-using System.Data.Entity;
+using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using TempusWebApp.Attributes;
 using TempusWebApp.Models;
+using TempusWebApp.Services;
 
 namespace TempusWebApp.Controllers
 {
   [CrossDomainBypass]
   public class TaskItemsController : ApiController
   {
-    private TempusWebAppContext db = new TempusWebAppContext();
+    private readonly ITaskService _taskService;
+
+    public TaskItemsController()
+    {
+      _taskService = new SqlTaskService();
+    }
 
     // GET: api/TaskItems
-    public IQueryable<TaskItem> GetTaskItems()
+    public async Task<IList<TaskItem>> GetTaskItems()
     {
-      return db.TaskItems;
+      return await _taskService.GetAll();
     }
 
     // GET: api/TaskItems/5
     [ResponseType(typeof(TaskItem))]
     public async Task<IHttpActionResult> GetTaskItem(int id)
     {
-      TaskItem taskItem = await db.TaskItems.FindAsync(id);
+      TaskItem taskItem = await _taskService.Get(id);
       if (taskItem == null)
       {
         return NotFound();
@@ -49,22 +54,18 @@ namespace TempusWebApp.Controllers
         return BadRequest();
       }
 
-      db.Entry(taskItem).State = EntityState.Modified;
+      if (!await _taskService.Exists(id))
+      {
+        return NotFound();
+      }
 
       try
       {
-        await db.SaveChangesAsync();
+        await _taskService.Update(taskItem);
       }
-      catch (DbUpdateConcurrencyException)
+      catch (DbUpdateConcurrencyException dce)
       {
-        if (!TaskItemExists(id))
-        {
-          return NotFound();
-        }
-        else
-        {
-          throw;
-        }
+        return InternalServerError(dce);
       }
 
       return StatusCode(HttpStatusCode.NoContent);
@@ -81,8 +82,7 @@ namespace TempusWebApp.Controllers
 
       try
       {
-        db.TaskItems.Add(taskItem);
-        await db.SaveChangesAsync();
+        await _taskService.Add(taskItem);
       }
       catch (Exception e)
       {
@@ -96,14 +96,13 @@ namespace TempusWebApp.Controllers
     [ResponseType(typeof(TaskItem))]
     public async Task<IHttpActionResult> DeleteTaskItem(int id)
     {
-      TaskItem taskItem = await db.TaskItems.FindAsync(id);
+      TaskItem taskItem = await _taskService.Get(id);
       if (taskItem == null)
       {
         return NotFound();
       }
 
-      db.TaskItems.Remove(taskItem);
-      await db.SaveChangesAsync();
+      
 
       return Ok(taskItem);
     }
@@ -119,14 +118,9 @@ namespace TempusWebApp.Controllers
     {
       if (disposing)
       {
-        db.Dispose();
+        _taskService.Dispose();
       }
       base.Dispose(disposing);
-    }
-
-    private bool TaskItemExists(int id)
-    {
-      return db.TaskItems.Count(e => e.Id == id) > 0;
     }
   }
 }

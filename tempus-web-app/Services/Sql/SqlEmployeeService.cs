@@ -22,32 +22,42 @@ namespace TempusWebApp.Services
       return _db.SaveChangesAsync();
     }
 
-    public Task<Employee> Get(int id)
+    public void Dispose()
     {
-      var employeeTask = _db.Employees.FindAsync(id);
-      return employeeTask;
+      _db.Dispose();
     }
 
-    public IList<Employee> GetAll()
+    public Task<bool> Exists(int id)
     {
-      var employees = _db.Employees.ToList();
+      return _db.Employees.AnyAsync(e => e.Id == id);
+    }
+
+    public Task<Employee> Get(int id)
+    {
+      var employee = _db.Employees.FindAsync(id);
+      return employee;
+    }
+
+    public Task<List<Employee>> GetAll()
+    {
+      var employees = _db.Employees.ToListAsync();
       return employees;
     }
 
-    public IList<Employee> GetForRoles(IList<int> roleIds)
+    public Task<List<Employee>> GetForRoles(IList<int> roleIds)
     {
       var employees = _db.Employees
         .Join(_db.EmployeeQualifications, e => e.Id, eq => eq.EmployeeId, (e, eq) => new { Employee = e, QualId = eq.QualificationId })
         .Where(item => roleIds.Contains(item.QualId))
-        .Select(item => item.Employee).ToList();
+        .Select(item => item.Employee).ToListAsync();
       return employees;
     }
 
-    public IList<Employee> GetForTask(int taskId)
+    public Task<List<Employee>> GetForTask(int taskId)
     {
       var employees = _db.TaskQualifications.Where(tq => tq.Task.Id == taskId)
         .Join(_db.EmployeeQualifications, tq => tq.Qualification.Id, eq => eq.Qualification.Id, (tq, eq) => eq.EmployeeId)
-        .Join(_db.Employees, eId => eId, e => e.Id, (eId, e) => e).ToList();
+        .Join(_db.Employees, eId => eId, e => e.Id, (eId, e) => e).ToListAsync();
       return employees;
     }
 
